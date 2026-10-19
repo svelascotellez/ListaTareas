@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Aplicación web de Lista de Tareas con interfaz de pestañas estilo navegador web y persistencia local.">
+  <title>Lista de Tareas | Organiza tus pendientes</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+  <!-- Bootstrap Icons 1.11 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Estilos Personalizados -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-body-tertiary d-flex flex-column min-vh-100">
+
+  <!-- Barra Superior / Header de Aplicación -->
+  <header class="app-header shadow-sm bg-dark text-white">
+    <div class="container-fluid px-3 pt-2">
+      <!-- Fila de marca y título -->
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-check2-square text-primary fs-4" aria-hidden="true"></i>
+          <h1 class="h5 mb-0 fw-bold tracking-tight">TaskFlow <span class="badge bg-primary-subtle text-primary border border-primary-subtle fs-6 fw-normal">Local</span></h1>
+        </div>
+        <div class="small text-white-50 d-none d-sm-block">
+          <i class="bi bi-hdd me-1" aria-hidden="true"></i>Guardado en LocalStorage
+        </div>
+      </div>
+
+      <!-- Barra de Pestañas estilo Navegador Web -->
+      <nav class="browser-tab-bar d-flex align-items-end" aria-label="Pestañas de listas">
+        <div class="browser-tabs-container d-flex align-items-end flex-grow-1 overflow-x-auto" id="tabs-container" role="tablist">
+          <!-- Pestaña Activa (Ejemplo estático inicial mientras se enlaza JS) -->
+          <button type="button" class="browser-tab active d-flex align-items-center gap-2" role="tab" aria-selected="true" id="tab-example" data-list-id="list-default">
+            <i class="bi bi-card-checklist text-primary" aria-hidden="true"></i>
+            <span class="tab-title text-truncate">Mi Lista</span>
+            <span class="tab-close-btn" aria-label="Cerrar lista" title="Eliminar lista">
+              <i class="bi bi-x"></i>
+            </span>
+          </button>
+        </div>
+
+        <!-- Botón para Crear Nueva Pestaña / Lista -->
+        <button type="button" class="btn-new-tab ms-1 mb-1" id="btn-add-tab" aria-label="Crear nueva lista" title="Nueva lista">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="container my-4 flex-grow-1" id="main-content">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10 col-xl-9">
+
+        <!-- Tarjeta Principal del Espacio de Trabajo -->
+        <div class="card shadow-sm border-0 app-workspace-card">
+          <!-- Cabecera de la Lista Activa -->
+          <div class="card-header bg-white border-bottom p-4">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+              <div class="d-flex align-items-center gap-2 flex-grow-1">
+                <h2 class="h3 fw-bold mb-0 text-dark" id="current-list-title">Mi Lista</h2>
+                <button type="button" class="btn btn-outline-secondary btn-sm border-0 rounded-circle" id="btn-edit-list-title" aria-label="Renombrar lista" title="Renombrar lista">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </div>
+
+              <!-- Indicador de Progreso y Estadísticas -->
+              <div class="d-flex align-items-center gap-3">
+                <span class="badge text-bg-light border px-3 py-2 fs-6 fw-medium" id="stats-badge">
+                  <i class="bi bi-check-circle me-1 text-success"></i>
+                  <span id="stats-text">0 de 0 tareas</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Barra de Progreso -->
+            <div class="progress mt-3 progress-sm" role="progressbar" aria-label="Progreso de la lista" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" id="list-progress-bar" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Cuerpo: Formulario para Nueva Tarea y Listado -->
+          <div class="card-body p-4">
+
+            <!-- Formulario para Añadir Tarea -->
+            <form id="task-form" class="mb-4">
+              <div class="input-group input-group-lg shadow-sm">
+                <span class="input-group-text bg-white border-end-0 text-muted">
+                  <i class="bi bi-plus-circle"></i>
+                </span>
+                <input 
+                  type="text" 
+                  class="form-control border-start-0 ps-1" 
+                  id="task-input" 
+                  name="taskTitle"
+                  placeholder="¿Qué necesitas hacer hoy? (Presiona Enter para añadir)" 
+                  autocomplete="off" 
+                  required
+                >
+                <button class="btn btn-primary px-4 fw-semibold d-flex align-items-center gap-2" type="submit" id="task-submit-btn">
+                  <span>Añadir</span>
+                  <i class="bi bi-arrow-right-short fs-5"></i>
+                </button>
+              </div>
+            </form>
+
+            <!-- Contenedor Dinámico de Tareas -->
+            <div id="tasks-container">
+              <!-- Lista de Tareas (Renderizada dinámicamente) -->
+              <ul class="list-group list-group-flush gap-2" id="tasks-list">
+                <!-- Ítem estático de demostración para visualización inicial -->
+                <li class="list-group-item d-flex align-items-center justify-content-between p-3 rounded-3 border task-item">
+                  <div class="d-flex align-items-center gap-3 flex-grow-1 overflow-hidden">
+                    <input class="form-check-input task-checkbox flex-shrink-0 fs-5 mt-0" type="checkbox" id="task-demo-check" aria-label="Marcar tarea como completada">
+                    <label class="form-check-label task-title text-truncate cursor-pointer" for="task-demo-check">
+                      ¡Bienvenido a tu lista de tareas! Añade tus pendientes o marca este como terminado.
+                    </label>
+                  </div>
+                  <div class="task-actions d-flex align-items-center gap-1 ms-2">
+                    <button type="button" class="btn btn-light btn-sm text-secondary btn-action-edit" title="Editar tarea" aria-label="Editar tarea">
+                      <i class="bi bi-pencil"></i>
+                    </button>
+                    <button type="button" class="btn btn-light btn-sm text-danger btn-action-delete" title="Eliminar tarea" aria-label="Eliminar tarea">
+                      <i class="bi bi-trash3"></i>
+                    </button>
+                  </div>
+                </li>
+              </ul>
+
+              <!-- Estado Vacío (Empty State, oculto por defecto cuando hay ítems) -->
+              <div id="empty-state" class="text-center py-5 d-none">
+                <div class="empty-state-icon mb-3">
+                  <i class="bi bi-clipboard-check text-primary opacity-50 display-3"></i>
+                </div>
+                <h3 class="h5 fw-bold text-dark">No hay tareas pendientes en esta lista</h3>
+                <p class="text-muted mb-0">Escribe una tarea arriba y presiona "Añadir" para comenzar.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Pie de Página -->
+  <footer class="mt-auto py-3 text-center text-muted small bg-white border-top">
+    <div class="container">
+      TaskFlow App &bull; Desarrollado con HTML, CSS, JavaScript y Bootstrap &bull; 100% Local
+    </div>
+  </footer>
+
+  <!-- Modal: Crear Nueva Lista -->
+  <div class="modal fade" id="modal-new-list" tabindex="-1" aria-labelledby="modal-new-list-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h2 class="modal-title h5 fw-bold" id="modal-new-list-title">
+            <i class="bi bi-folder-plus text-primary me-2"></i>Nueva Lista de Tareas
+          </h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="form-new-list">
+          <div class="modal-body py-4">
+            <label for="input-new-list-title" class="form-label fw-semibold">Nombre de la lista:</label>
+            <input type="text" class="form-control form-control-lg" id="input-new-list-title" placeholder="Ej. Proyectos, Compras, Trabajo" required autocomplete="off">
+            <div class="form-text">Podrás agregar tantas tareas como desees a esta nueva pestaña.</div>
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">Crear Lista</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Renombrar Lista -->
+  <div class="modal fade" id="modal-rename-list" tabindex="-1" aria-labelledby="modal-rename-list-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h2 class="modal-title h5 fw-bold" id="modal-rename-list-title">
+            <i class="bi bi-pencil-square text-primary me-2"></i>Renombrar Lista
+          </h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="form-rename-list">
+          <div class="modal-body py-4">
+            <label for="input-rename-list-title" class="form-label fw-semibold">Nuevo nombre:</label>
+            <input type="text" class="form-control form-control-lg" id="input-rename-list-title" required autocomplete="off">
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Editar Tarea -->
+  <div class="modal fade" id="modal-edit-task" tabindex="-1" aria-labelledby="modal-edit-task-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h2 class="modal-title h5 fw-bold" id="modal-edit-task-title">
+            <i class="bi bi-pencil text-primary me-2"></i>Editar Tarea
+          </h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <form id="form-edit-task">
+          <div class="modal-body py-4">
+            <input type="hidden" id="edit-task-id">
+            <label for="input-edit-task-title" class="form-label fw-semibold">Descripción de la tarea:</label>
+            <input type="text" class="form-control form-control-lg" id="input-edit-task-title" required autocomplete="off">
+          </div>
+          <div class="modal-footer bg-light">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary px-4 fw-semibold">Actualizar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirmar Eliminación de Lista -->
+  <div class="modal fade" id="modal-delete-list" tabindex="-1" aria-labelledby="modal-delete-list-title" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header">
+          <h2 class="modal-title h5 fw-bold text-danger" id="modal-delete-list-title">
+            <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Eliminar Lista
+          </h2>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body py-4">
+          <input type="hidden" id="delete-list-id">
+          <p class="mb-2">¿Estás seguro de que deseas eliminar la lista <strong id="delete-list-name"></strong>?</p>
+          <div class="alert alert-warning d-flex align-items-center gap-2 mb-0 py-2 small" id="delete-list-warning-container">
+            <i class="bi bi-exclamation-circle-fill text-warning flex-shrink-0"></i>
+            <span id="delete-list-warning">Esta lista contiene tareas que se perderán permanentemente.</span>
+          </div>
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger px-4 fw-semibold" id="btn-confirm-delete-list">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5.3 Bundle JS con Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <!-- Módulos de la Aplicación -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

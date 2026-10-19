@@ -1,0 +1,314 @@
+/* ==========================================================================
+   TaskFlow - Estilos Personalizados
+   Diseño de Pestañas estilo Navegador Web y Lista de Tareas
+   ========================================================================== */
+
+:root {
+  --app-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --tab-bg-inactive: rgba(255, 255, 255, 0.08);
+  --tab-bg-hover: rgba(255, 255, 255, 0.15);
+  --tab-bg-active: #ffffff;
+  --tab-text-inactive: #cbd5e1;
+  --tab-text-active: #1e293b;
+  --tab-height: 42px;
+  --tab-radius: 10px;
+}
+
+body {
+  font-family: var(--app-font);
+  background-color: #f1f5f9;
+  color: #334155;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   Header y Pestañas estilo Navegador Web
+   ========================================================================== */
+
+.app-header {
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0;
+}
+
+.browser-tab-bar {
+  position: relative;
+  min-height: 46px;
+  gap: 4px;
+}
+
+/* Contenedor desplazable de pestañas */
+.browser-tabs-container {
+  gap: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  padding-bottom: 0;
+}
+
+.browser-tabs-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.browser-tabs-container::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* Pestaña Individual */
+.browser-tab {
+  height: var(--tab-height);
+  max-width: 220px;
+  min-width: 140px;
+  background-color: var(--tab-bg-inactive);
+  color: var(--tab-text-inactive);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: none;
+  border-radius: var(--tab-radius) var(--tab-radius) 0 0;
+  padding: 0 14px;
+  font-size: 0.885rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.18s ease-in-out;
+  position: relative;
+  user-select: none;
+}
+
+.browser-tab:hover:not(.active) {
+  background-color: var(--tab-bg-hover);
+  color: #ffffff;
+}
+
+/* Pestaña Activa: Estilo Navegador */
+.browser-tab.active {
+  background-color: var(--tab-bg-active);
+  color: var(--tab-text-active);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.06);
+  z-index: 2;
+}
+
+.browser-tab.active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: #0d6efd;
+  border-radius: var(--tab-radius) var(--tab-radius) 0 0;
+}
+
+/* Título de la pestaña */
+.tab-title {
+  flex-grow: 1;
+  text-align: left;
+}
+
+/* Botón de cierre en pestaña */
+.tab-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  font-size: 0.9rem;
+  opacity: 0.6;
+  transition: all 0.15s ease;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+
+.tab-close-btn:hover {
+  opacity: 1;
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+}
+
+.browser-tab:not(.active) .tab-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* Botón Añadir Pestaña */
+.btn-new-tab {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+}
+
+.btn-new-tab:hover {
+  background-color: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.btn-new-tab:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Espacio de Trabajo y Tarjeta Principal
+   ========================================================================== */
+
+.app-workspace-card {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08) !important;
+}
+
+.progress-sm {
+  height: 6px;
+  border-radius: 10px;
+  background-color: #e2e8f0;
+}
+
+/* ==========================================================================
+   Ítems de Tarea
+   ========================================================================== */
+
+.task-item {
+  background-color: #ffffff;
+  border-color: #e2e8f0 !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.task-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+  border-color: #cbd5e1 !important;
+}
+
+/* Checkbox personalizado */
+.task-checkbox {
+  cursor: pointer;
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: #0d6efd;
+  transition: transform 0.12s ease;
+}
+
+.task-checkbox:active {
+  transform: scale(0.9);
+}
+
+/* Título de la tarea */
+.task-title {
+  font-size: 0.975rem;
+  color: #1e293b;
+  transition: color 0.2s ease, text-decoration 0.2s ease, opacity 0.2s ease;
+  word-break: break-word;
+}
+
+/* Tarea Completada */
+.task-item.completed {
+  background-color: #f8fafc;
+  border-color: #f1f5f9 !important;
+}
+
+.task-item.completed .task-title {
+  text-decoration: line-through;
+  color: #94a3b8;
+  opacity: 0.75;
+}
+
+/* Botones de acción dentro de la tarea */
+.task-actions {
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+}
+
+.task-item:hover .task-actions {
+  opacity: 1;
+}
+
+.task-actions .btn {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.task-actions .btn:hover {
+  background-color: #e2e8f0;
+}
+
+.task-actions .btn-action-delete:hover {
+  background-color: #fee2e2;
+  color: #dc2626 !important;
+}
+
+/* Utilidad de cursor */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   Estado Vacío (Empty State)
+   ========================================================================== */
+
+#empty-state {
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   Adaptabilidad Responsiva (Mobile)
+   ========================================================================== */
+
+@media (max-width: 576px) {
+  .browser-tab {
+    min-width: 110px;
+    max-width: 160px;
+    padding: 0 8px;
+    font-size: 0.825rem;
+  }
+
+  .card-header,
+  .card-body {
+    padding: 1.25rem !important;
+  }
+
+  .task-item {
+    padding: 0.875rem !important;
+  }
+
+  .task-actions {
+    opacity: 1;
+  }
+}
+
+/* Animación de error de validación */
+.shake {
+  animation: shakeInput 0.3s ease-in-out;
+}
+
+@keyframes shakeInput {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
